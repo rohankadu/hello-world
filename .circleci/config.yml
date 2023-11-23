@@ -53,7 +53,7 @@
 
 version: 2.1
 jobs:
-  hello-world:
+  test-env-vars:
     docker:
      - image: cimg/base:stable
     # environment:
@@ -66,11 +66,11 @@ jobs:
       - run:
           name: Echo hello-world
           command: |
-            echo Hello $client_name
+            echo $(client_name)
 workflows:
   test-workflow:
     jobs:
-      - hello-world:
+      - test-env-vars:
           context: dev
     
 
