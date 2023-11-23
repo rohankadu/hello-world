@@ -56,19 +56,21 @@ jobs:
   hello-world:
     docker:
      - image: cimg/base:stable
-    parameters:
-      client_name:
-        type: string
+    # environment:
+    #   dev_client_name: dev_client_name
+    # parameters:
+    #   client_name:
+    #     type: string
     steps:
       - checkout
       - run:
           name: Echo hello-world
-          command: "echo Hello <<parameters.client_name>>"
+          command: "echo Hello $client_name"
 workflows:
   test-workflow:
     jobs:
       - hello-world:
-          client_name: "Rohan"
+          context: dev
     
 
 
