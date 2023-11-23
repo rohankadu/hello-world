@@ -55,7 +55,7 @@ version: 2.1
 jobs:
   test-env-vars:
     docker:
-     - image: cimg/node:18.18
+     - image: cimg/node:18.11.0
     # environment:
     #   dev_client_name: dev_client_name
     # parameters:
@@ -65,9 +65,10 @@ jobs:
       - checkout
       - run:
           name: Echo environment variable from context
-          command: |
-            echo $(client_name)
-            echo $name
+          command: echo $(client_name)
+      - run:
+          name: Echo environment variable from project
+          command: echo $name
 workflows:
   test-workflow:
     jobs:
