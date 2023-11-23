@@ -91,9 +91,7 @@ workflows:
     jobs:
       - create_var_file:
           name: test job to create file
-          # db_url: STAGING_TIMESCALEDB_URL
-          # peer_id: STAGING_VPC_PEER_ID
-          db_url: "https://timescaledb.com"
-          peer_id: "vpc-123456789"
+          db_url: STAGING_TIMESCALEDB_URL
+          peer_id: STAGING_VPC_PEER_ID
 
 
