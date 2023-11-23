@@ -65,7 +65,8 @@ jobs:
       - checkout
       - run:
           name: Echo hello-world
-          command: "echo Hello $client_name"
+          command: |
+            echo Hello $client_name
 workflows:
   test-workflow:
     jobs:
