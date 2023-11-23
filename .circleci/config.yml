@@ -94,6 +94,6 @@ workflows:
           # db_url: STAGING_TIMESCALEDB_URL
           # peer_id: STAGING_VPC_PEER_ID
           db_url: https://timescaledb.com
-          peer_id: 123456789
+          peer_id: "vpc-123456789"
 
 
