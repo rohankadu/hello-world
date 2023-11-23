@@ -52,29 +52,47 @@
 ##########################################################################################################
 
 version: 2.1
+orbs:
+  terraform: "circleci/terraform@3.2.1"
 jobs:
-  test-env-vars:
-    docker:
-     - image: cimg/node:18.11.0
-    # environment:
-    #   dev_client_name: dev_client_name
-    # parameters:
-    #   client_name:
-    #     type: string
+  create_var_file:
+    executor: terraform/default
+    parameters:
+      db_url:
+        type: string  
+      peer_id:
+        type: string
     steps:
-      - checkout
       - run:
-          name: Echo environment variable from context
-          command: echo $client_name
-      - run:
-          name: Echo environment variable from project
-          command: echo $name
+          name: Write var_file
+          command: |
+            echo "timescaledb_url = \"${<< parameters.db_url >>}\"" >> timescaledb.tfvars
+            echo "timescaledb_vpc_peer_id = \"${<< parameters.peer_id >>}\"" >> timescaledb.tfvars
+            cat timescaledb.tfvars
+  # test-env-vars:
+  #   docker:
+  #    - image: cimg/node:18.11.0
+  #   # environment:
+  #   #   dev_client_name: dev_client_name
+  #   # parameters:
+  #   #   client_name:
+  #   #     type: string
+  #   steps:
+  #     - checkout
+  #     - run:
+  #         name: "Print an env var stored in the Context"
+  #         command: echo $client_name
+  #     - run:
+  #         name: "Print an env var stored in the Project"
+  #         command: echo "Hello" $name
+
 workflows:
-  test-workflow:
+  deploy_infrastructure:
     jobs:
-      - test-env-vars:
-          context: dev
-    
+      - create_var_file:
+          name: test job to create file
+          db_url: STAGING_TIMESCALEDB_URL
+          peer_id: STAGING_VPC_PEER_ID
 
 
 
