@@ -65,7 +65,7 @@ jobs:
       - checkout
       - run:
           name: Echo environment variable from context
-          command: echo $(client_name)
+          command: echo $client_name
       - run:
           name: Echo environment variable from project
           command: echo $name
