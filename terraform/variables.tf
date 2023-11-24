@@ -1,11 +1,9 @@
 variable "region" {
   description = "AWS Region"
-  default = "us-east-1"
 }
 
 variable "profile" {
   description = "AWS profile to assume permissions to deploy terraform"
-  default = "default"
 }
 
 variable "ami_id" {
@@ -14,8 +12,6 @@ variable "ami_id" {
 
 variable "instance_type" {
   description = "AWS EC2 instance type"
-  default = "t3.micro"
-  type = string
 }
 
 variable "subnet_id" {
@@ -24,12 +20,10 @@ variable "subnet_id" {
 
 variable "volume_size" {
   description = "Size of the volume in gibibytes (GiB)."
-  default = "8"
 }
 
 variable "volume_type" {
   description = "Type of volume. Valid values include standard, gp2, gp3, io1, io2, sc1, or st1. Defaults to gp2"
-  default = "gp2"
 }
 
 variable "security_groups" {
