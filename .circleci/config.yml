@@ -123,7 +123,7 @@ workflows:
       - hold:
           type: approval
           requires:
-            - terraform plan
+            - plan dev
       - terraform/apply:
           tag: 1.1.9
           name: apply dev
