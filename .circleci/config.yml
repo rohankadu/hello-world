@@ -76,7 +76,6 @@ jobs:
           paths:
             - .aws/credentials
 
-
   # test-env-vars:
   #   docker:
   #    - image: cimg/node:18.11.0
@@ -105,6 +104,8 @@ workflows:
           tag: 1.1.9
           checkout: true
           path: terraform/
+          requires:
+            - create_credentails_file
       - terraform/validate:
           tag: 1.1.9
           checkout: true
@@ -119,6 +120,7 @@ workflows:
           path: terraform/
           attach-workspace: true
           persist-workspace: true
+          backend_config_file: backend.tf
           var_file: terraform.tfvars
           requires:
             - File to create aws config
@@ -135,6 +137,7 @@ workflows:
           path: terraform/
           attach-workspace: true
           persist-workspace: true
+          backend_config_file: backend.tf
           var_file: terraform.tfvars
           requires:
             - hold
