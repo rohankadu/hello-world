@@ -1,10 +1,6 @@
-provider "aws" {
-  region = var.region
-}
-
 locals {
   tags = {
-    Name = "circleci-test-deployment"
+    name = "circleci-test-deployment"
     provisioned-by = "terraform"
   }
 }

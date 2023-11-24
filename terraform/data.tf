@@ -1,6 +1,6 @@
-data "aws_subnet" "ec2_subnet" {
-  filter {
-    name = "tag:Name"
-    values = [""]
-  }
-}
+# data "aws_subnets" "vpc_subnets" {
+#   filter {
+#     name = "vpc-id"
+#     values = [var.vpc_id]
+#   }
+# }
