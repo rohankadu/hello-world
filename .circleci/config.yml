@@ -66,15 +66,15 @@ jobs:
       - run:
           name: Write aws credentails file
           command: |
-            mkdir /root
-            echo "[default] " >> /root/.aws/credentials
-            echo "aws_access_key_id = \"${<< parameters.aws_access_key_id >>}\"" >> /root/.aws/credentials
-            echo "aws_secret_access_key = \"${<< parameters.aws_secret_access_key >>}\"" >> /root/.aws/credentials
-            cat /root/.aws/credentials
+            mkdir .aws
+            echo "[default] " >> .aws/credentials
+            echo "aws_access_key_id = \"${<< parameters.aws_access_key_id >>}\"" >> .aws/credentials
+            echo "aws_secret_access_key = \"${<< parameters.aws_secret_access_key >>}\"" >> .aws/credentials
+            cat .aws/credentials
       - persist_to_workspace:
           root: .
           paths:
-            - /root/.aws/credentials
+            - .aws/credentials
 
 
   # test-env-vars:
