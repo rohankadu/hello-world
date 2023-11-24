@@ -111,10 +111,11 @@ workflows:
             - terraform/fmt
       - terraform/plan:
           tag: 1.1.9
-          name: terraform plan
+          name: plan dev
+          # workspace: dev
           checkout: true
-          workspace: test
           attach-workspace: true
+          persist-workspace: true
           var_file: terraform.tfvars
           requires:
             - File to create aws config
@@ -125,9 +126,11 @@ workflows:
             - terraform plan
       - terraform/apply:
           tag: 1.1.9
-          name: apply terraform
-          workspace: test
+          name: apply dev
+          # workspace: dev
+          checkout: true
           attach-workspace: true
+          persist-workspace: true
           var_file: terraform.tfvars
           requires:
             - hold
