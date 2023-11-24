@@ -104,11 +104,11 @@ workflows:
       - terraform/fmt:
           tag: 1.1.9
           checkout: true
-          path: /terraform
+          path: terraform/
       - terraform/validate:
           tag: 1.1.9
           checkout: true
-          path: /terraform
+          path: terraform/
           requires:
             - terraform/fmt
       - terraform/plan:
@@ -116,7 +116,7 @@ workflows:
           name: plan dev
           # workspace: dev
           checkout: true
-          path: /terraform
+          path: terraform/
           attach-workspace: true
           persist-workspace: true
           var_file: terraform.tfvars
@@ -132,7 +132,7 @@ workflows:
           name: apply dev
           # workspace: dev
           checkout: true
-          path: /terraform
+          path: terraform/
           attach-workspace: true
           persist-workspace: true
           var_file: terraform.tfvars
