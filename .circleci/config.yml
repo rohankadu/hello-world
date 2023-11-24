@@ -116,7 +116,7 @@ workflows:
           attach-workspace: true
           var_file: terraform.tfvars
           requires:
-            - create_credentails_file
+            - File to create aws config
             - terraform/validate
       - hold:
           type: approval
