@@ -1,11 +1,9 @@
 terraform {
   backend "s3" {
-    bucket = "value"
-    profile = "value"
-    key = "value"
+    bucket = "tf-backend-rk-test-123"
+    profile = "default"
+    key = "dev"
     encrypt = true
-    region = var.region
-    dynamodb_table = "value"
-    
+    region = var.region  
   }
 }
