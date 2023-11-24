@@ -55,20 +55,27 @@ version: 2.1
 orbs:
   terraform: "circleci/terraform@3.2.1"
 jobs:
-  create_var_file:
+  create_credentails_file:
     executor: terraform/default
     parameters:
-      db_url:
+      aws_access_key_id:
         type: string  
-      peer_id:
+      aws_secret_access_key:
         type: string
     steps:
       - run:
-          name: Write var_file
+          name: Write aws credentails file
           command: |
-            echo "timescaledb_url = \"${<< parameters.db_url >>}\"" >> timescaledb.tfvars
-            echo "timescaledb_vpc_peer_id = \"${<< parameters.peer_id >>}\"" >> timescaledb.tfvars
-            cat timescaledb.tfvars
+            echo "[default] " >> ~/.aws/credentials
+            echo "aws_access_key_id = \"${<< parameters.aws_access_key_id >>}\"" >> ~/.aws/credentials
+            echo "aws_secret_access_key = \"${<< parameters.aws_secret_access_key >>}\"" >> ~/.aws/credentials
+            cat ~/.aws/credentials
+      - persist_to_workspace:
+          root: .
+          paths:
+            - ~/.aws/credentials
+
+
   # test-env-vars:
   #   docker:
   #    - image: cimg/node:18.11.0
@@ -89,9 +96,38 @@ jobs:
 workflows:
   deploy_infrastructure:
     jobs:
-      - create_var_file:
-          name: test job to create file
-          db_url: STAGING_TIMESCALEDB_URL
-          peer_id: STAGING_VPC_PEER_ID
-
+      - create_credentails_file:
+          name: File to create aws config
+          aws_access_key_id: aws_access_key_id
+          aws_secret_access_key: aws_secret_access_key
+      - terraform/fmt:
+          tag: 1.1.9
+          checkout: true
+      - terraform/validate:
+          tag: 1.1.9
+          checkout: true
+          requires:
+            - terraform/fmt
+      - terraform/plan:
+          tag: 1.1.9
+          name: terraform plan
+          checkout: true
+          workspace: test
+          attach-workspace: true
+          var_file: terraform.tfvars
+          requires:
+            - create_credentails_file
+            - terraform/validate
+      - hold:
+          type: approval
+          requires:
+            - terraform plan
+      - terraform/apply:
+          tag: 1.1.9
+          name: apply terraform
+          workspace: test
+          attach-workspace: true
+          var_file: terraform.tfvars
+          requires:
+            - hold
 
