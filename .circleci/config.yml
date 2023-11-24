@@ -97,7 +97,7 @@ workflows:
   deploy_infrastructure:
     jobs:
       - create_credentails_file:
-          name: File to create aws config
+          name: setup aws credentials
           aws_access_key_id: aws_access_key_id
           aws_secret_access_key: aws_secret_access_key
       - terraform/fmt:
@@ -105,7 +105,7 @@ workflows:
           checkout: true
           path: terraform/
           requires:
-            - create_credentails_file
+            - setup aws credentials
       - terraform/validate:
           tag: 1.1.9
           checkout: true
@@ -123,7 +123,7 @@ workflows:
           backend_config_file: backend.tf
           var_file: terraform.tfvars
           requires:
-            - File to create aws config
+            - setup aws credentials
             - terraform/validate
       - hold:
           type: approval
