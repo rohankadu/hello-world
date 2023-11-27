@@ -60,9 +60,15 @@ jobs:
     executor: aws-cli/default
     steps:
       - aws-cli/setup:
+          profile_name: default
           aws_access_key_id: aws_access_key_id
           aws_secret_access_key: aws_secret_access_key
-
+          region: us-east-1
+          
+  test-aws-cli:
+    executor: aws-cli/default
+    steps:
+      - run: aws s3 ls
 
   # test-env-vars:
   #   docker:
@@ -87,45 +93,46 @@ workflows:
       - aws-cli-cred-setup:
           name: setup aws credentials
           context: aws
-      - terraform/fmt:
-          tag: 1.1.9
-          checkout: true
-          path: terraform/
-          requires:
-            - setup aws credentials
-      - terraform/validate:
-          tag: 1.1.9
-          checkout: true
-          path: terraform/
-          requires:
-            - terraform/fmt
-      - terraform/plan:
-          tag: 1.1.9
-          name: plan dev
-          # workspace: dev
-          checkout: true
-          path: terraform/
-          attach-workspace: true
-          persist-workspace: true
-          # backend_config_file: backend.tf
-          var_file: terraform.tfvars
-          requires:
-            - setup aws credentials
-            - terraform/validate
-      - hold:
-          type: approval
-          requires:
-            - plan dev
-      - terraform/apply:
-          tag: 1.1.9
-          name: apply dev
-          # workspace: dev
-          checkout: true
-          path: terraform/
-          attach-workspace: true
-          persist-workspace: true
-          # backend_config_file: backend.tf
-          var_file: terraform.tfvars
-          requires:
-            - hold
+      - test-aws-cli    
+      # - terraform/fmt:
+      #     tag: 1.1.9
+      #     checkout: true
+      #     path: terraform/
+      #     requires:
+      #       - setup aws credentials
+      # - terraform/validate:
+      #     tag: 1.1.9
+      #     checkout: true
+      #     path: terraform/
+      #     requires:
+      #       - terraform/fmt
+      # - terraform/plan:
+      #     tag: 1.1.9
+      #     name: plan dev
+      #     # workspace: dev
+      #     checkout: true
+      #     path: terraform/
+      #     attach-workspace: true
+      #     persist-workspace: true
+      #     # backend_config_file: backend.tf
+      #     var_file: terraform.tfvars
+      #     requires:
+      #       - setup aws credentials
+      #       - terraform/validate
+      # - hold:
+      #     type: approval
+      #     requires:
+      #       - plan dev
+      # - terraform/apply:
+      #     tag: 1.1.9
+      #     name: apply dev
+      #     # workspace: dev
+      #     checkout: true
+      #     path: terraform/
+      #     attach-workspace: true
+      #     persist-workspace: true
+      #     # backend_config_file: backend.tf
+      #     var_file: terraform.tfvars
+      #     requires:
+      #       - hold
 
