@@ -53,28 +53,16 @@
 
 version: 2.1
 orbs:
+  aws-cli: circleci/aws-cli@4.1.2
   terraform: "circleci/terraform@3.2.1"
 jobs:
-  create_credentails_file:
-    executor: terraform/default
-    parameters:
-      aws_access_key_id:
-        type: string  
-      aws_secret_access_key:
-        type: string
+  aws-cli-cred-setup:
+    executor: aws-cli/default
     steps:
-      - run:
-          name: Write aws credentails file
-          command: |
-            mkdir .aws
-            echo "[default]" >> /root/.aws/credentials
-            echo "aws_access_key_id = \"${<< parameters.aws_access_key_id >>}\"" >> /root/.aws/credentials
-            echo "aws_secret_access_key = \"${<< parameters.aws_secret_access_key >>}\"" >> /root/.aws/credentials
-            cat /root/.aws/credentials
-      - persist_to_workspace:
-          root: .
-          paths:
-            - /root/.aws/credentials
+      - aws-cli/setup:
+          aws_access_key_id: aws_access_key_id
+          aws_secret_access_key: aws_secret_access_key
+
 
   # test-env-vars:
   #   docker:
@@ -96,10 +84,9 @@ jobs:
 workflows:
   deploy_infrastructure:
     jobs:
-      - create_credentails_file:
+      - aws-cli-cred-setup:
           name: setup aws credentials
-          aws_access_key_id: aws_access_key_id
-          aws_secret_access_key: aws_secret_access_key
+          context: aws
       - terraform/fmt:
           tag: 1.1.9
           checkout: true
