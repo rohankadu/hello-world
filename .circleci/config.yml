@@ -59,6 +59,7 @@ jobs:
   aws-cli-cred-setup:
     executor: aws-cli/default
     steps:
+      - aws-cli/install
       - aws-cli/setup:
           profile_name: default
           aws_access_key_id: aws_access_key_id
@@ -92,8 +93,9 @@ workflows:
     jobs:
       - aws-cli-cred-setup:
           name: setup aws credentials
-          context: aws
-      - test-aws-cli    
+      - test-aws-cli:
+          requires:
+            - setup aws credentials
       # - terraform/fmt:
       #     tag: 1.1.9
       #     checkout: true
