@@ -53,88 +53,57 @@
 
 version: 2.1
 orbs:
-  aws-cli: circleci/aws-cli@4.1.2
+  # aws-cli: circleci/aws-cli@4.1.2
   terraform: "circleci/terraform@3.2.1"
-jobs:
-  aws-cli-cred-setup:
-    executor: aws-cli/default
-    steps:
-      - aws-cli/install
-      - aws-cli/setup:
-          profile_name: default
-          aws_access_key_id: aws_access_key_id
-          aws_secret_access_key: aws_secret_access_key
-          region: us-east-1
-          
-  test-aws-cli:
-    executor: aws-cli/default
-    steps:
-      - run: aws s3 ls
-
-  # test-env-vars:
-  #   docker:
-  #    - image: cimg/node:18.11.0
-  #   # environment:
-  #   #   dev_client_name: dev_client_name
-  #   # parameters:
-  #   #   client_name:
-  #   #     type: string
-  #   steps:
-  #     - checkout
-  #     - run:
-  #         name: "Print an env var stored in the Context"
-  #         command: echo $client_name
-  #     - run:
-  #         name: "Print an env var stored in the Project"
-  #         command: echo "Hello" $name
-
+# jobs:
+#   aws-cli-cred-setup:
+#     executor: terraform/default
+#     description: command defined to setup aws-cli to run terraform
+#     steps:
+#       - aws-cli/install
+#       - aws-cli/setup:
+#           profile_name: default
+#           aws_access_key_id: aws_access_key_id
+#           aws_secret_access_key: aws_secret_access_key
+#           region: us-east-1
 workflows:
   deploy_infrastructure:
     jobs:
-      - aws-cli-cred-setup:
-          name: setup aws credentials
-      - test-aws-cli:
+      # - aws-cli-cred-setup
+      - terraform/fmt:
+          tag: 1.1.9
+          checkout: true
+          path: terraform/
+      - terraform/validate:
+          tag: 1.1.9
+          checkout: true
+          context: terraform
+          path: terraform/
           requires:
-            - setup aws credentials
-      # - terraform/fmt:
-      #     tag: 1.1.9
-      #     checkout: true
-      #     path: terraform/
-      #     requires:
-      #       - setup aws credentials
-      # - terraform/validate:
-      #     tag: 1.1.9
-      #     checkout: true
-      #     path: terraform/
-      #     requires:
-      #       - terraform/fmt
-      # - terraform/plan:
-      #     tag: 1.1.9
-      #     name: plan dev
-      #     # workspace: dev
-      #     checkout: true
-      #     path: terraform/
-      #     attach-workspace: true
-      #     persist-workspace: true
-      #     # backend_config_file: backend.tf
-      #     var_file: terraform.tfvars
-      #     requires:
-      #       - setup aws credentials
-      #       - terraform/validate
-      # - hold:
-      #     type: approval
-      #     requires:
-      #       - plan dev
-      # - terraform/apply:
-      #     tag: 1.1.9
-      #     name: apply dev
-      #     # workspace: dev
-      #     checkout: true
-      #     path: terraform/
-      #     attach-workspace: true
-      #     persist-workspace: true
-      #     # backend_config_file: backend.tf
-      #     var_file: terraform.tfvars
-      #     requires:
-      #       - hold
+            - terraform/fmt
+      - terraform/plan:
+          tag: 1.1.9
+          name: plan dev
+          checkout: true
+          context: terraform
+          path: terraform/
+          attach-workspace: true
+          persist-workspace: true
+          var_file: terraform.tfvars
+            - terraform/validate
+      - hold:
+          type: approval
+          requires:
+            - plan dev
+      - terraform/apply:
+          tag: 1.1.9
+          name: apply dev
+          checkout: true
+          context: terraform
+          path: terraform/
+          attach-workspace: true
+          persist-workspace: true
+          var_file: terraform.tfvars
+          requires:
+            - hold
 
