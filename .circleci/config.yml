@@ -89,7 +89,7 @@ workflows:
           path: terraform/
           attach-workspace: true
           persist-workspace: true
-          var_file: ["terraform.tfvars"]
+          var_file: "terraform.tfvars"
           requires:
             - terraform/validate
       - hold:
@@ -104,7 +104,7 @@ workflows:
           path: terraform/
           attach-workspace: true
           persist-workspace: true
-          var_file: ["terraform.tfvars"]
+          var_file: "terraform.tfvars"
           requires:
             - hold
 
