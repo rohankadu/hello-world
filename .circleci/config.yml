@@ -95,10 +95,10 @@ workflows:
       - hold:
           type: approval
           requires:
-            - plan dev
+            - terraform plan
       - terraform/apply:
           tag: 1.1.9
-          name: apply dev
+          name: terraform apply
           checkout: true
           context: terraform
           path: terraform/
